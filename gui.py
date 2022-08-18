@@ -33,7 +33,7 @@ class MainUI(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         self.frames = {}
-        for F in (MainPage, FirstPage, SecondPage, ThirdPage, LastPage): 
+        for F in (MainPage, FirstPage, SecondPage, ThirdPage, FourthPage, LastPage): 
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -69,7 +69,7 @@ class MainPage(tk.Frame):
             
             button1 = tk.Button(self, text="   Add New User  ", fg="#ffffff", bg="#5897ee",command=lambda: self.controller.show_frame("FirstPage"))
             button2 = tk.Button(self, text="   Check a User  ", fg="#ffffff", bg="#5897ee",command=lambda: self.controller.show_frame("SecondPage"))
-            button3 = tk.Button(self, text="   Check Log  ", fg="#ffffff", bg="#5897ee",command=lambda: self.controller.show_frame("SecondPage"))
+            button3 = tk.Button(self, text="   Check Log  ", fg="#ffffff", bg="#5897ee",command=lambda: self.controller.show_frame("FourthPage"))
             
             
             button1.grid(row=1, column=0, ipady=3, ipadx=2)
@@ -175,6 +175,31 @@ class ThirdPage(tk.Frame):
         messagebox.showinfo("SUCCESS", "The dataset model has been successfully trained!")
         self.controller.show_frame("LastPage") #to show face recognition part. can be used at select user
 
+class FourthPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.loglabel = tk.Label(self, text="Check Logs", font='Helvetica 14 bold', fg="#263942")
+        self.loglabel.grid(row=0, column=0, columnspan=2, sticky="ew", pady=10)
+        self.buttonknown = tk.Button(self, text="Check known log", fg="#ffffff", bg="#16ba73", command=self.on_known)
+        self.buttonunknown = tk.Button(self, text="Check unknown log", fg="#ffffff", bg="#f23b2e",command=self.on_unknown)
+        self.buttoncancel = tk.Button(self, text="Cancel", bg="#ffffff", fg="#263942", command=lambda: controller.show_frame("MainPage"))
+        self.buttonknown.grid(row=1, column=0, ipadx=5, ipady=4, padx=10, pady=20)
+        self.buttonunknown.grid(row=1, column=1, ipadx=5, ipady=4, padx=10, pady=20)
+        self.buttoncancel.grid (row=1, column=2, ipadx=5, ipady=4, padx=10, pady=20)
+        
+    def on_known(self):
+        f = open("/home/pi/PSM Facial Recognition/knownlogs.log","r")
+        for x in f:
+            print(x)
+        f.close()
+    
+    def on_unknown(self):
+        f = open("/home/pi/PSM Facial Recognition/unknownlogs.log","r")
+        for x in f:
+            print(x)
+        f.close()
 
 class LastPage(tk.Frame):
 
@@ -205,4 +230,5 @@ class LastPage(tk.Frame):
 app = MainUI()
 app.iconphoto(False, tk.PhotoImage(file='icon.ico')) #image at the title
 app.mainloop()
+
 
